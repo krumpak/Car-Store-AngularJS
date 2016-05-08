@@ -18,7 +18,7 @@
 		<div class="container-fluid" ng-controller="storeController as store">
 			<div class="row">
 				<div class="col-md-12 col-lg-8 col-lg-offset-2 col-xl-6 col-xl-offset-3 mainContainer">
-					<a href="./"><h1 class="text-xs-center">Car Store</h1></a>
+					<h1 class="text-xs-center">Car Store</h1>
 					<div class="alert alert-danger animate-show" ng-show="store.error">
 						<strong ng-repeat="error in store.errorsCars"> {{ error.message }} </strong> <a href="#" class="alert-link" ng-click="store.getCars()">Tray&nbsp;again!</a>
 					</div>
@@ -133,6 +133,9 @@
 						</div>
 					</div>
 				</div>
+			</div>
+			<div class="row">
+				<footer class="col-sm-12 text-muted text-xs-center"><small>&copy; 2016 Gorazd Krumpak</small></footer>
 			</div>
 		</div>
   </body>

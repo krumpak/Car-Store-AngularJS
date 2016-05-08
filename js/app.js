@@ -108,8 +108,9 @@ app.controller('storeController', function($scope, APIresult, $timeout, $http, $
 		vm.showOrder = false;
 		vm.showTimeslot = false;
 		vm.selectedTimeslot = '';
-		vm.sended.status = '';
-		vm.store.errorOrder = '';
+		vm.sended = '';
+		vm.errorOrder = false;
+		vm.errorsSended = '';
 		vm.errorsTimeslots = '';
 	}
 });
