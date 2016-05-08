@@ -1,0 +1,47 @@
+.mainContainer
+	background-color: #f7f7f9
+	padding-bottom: 20px
+
+h1
+	padding: 20px
+
+.preloader
+	width: 200px
+	padding: 20px
+
+#changeCar
+	float: right
+	margin: 20px 20px 0 0
+	
+.card-bgimage
+	height: 150px
+	width: 100%
+	background-position: center center
+	background-size: cover
+	background-size: 115%
+	background-repeat: no-repeat
+	transition: all 1.25s ease
+	background-color: gray
+
+	&:hover
+		transition: all .5s ease
+		background-size: 100%
+
+#selected-card .card-bgimage
+	height: 170px
+
+.dl-horizontal
+	padding-left: 10px !important
+
+.animate-show
+	opacity: 1
+	width: 100%
+	&.ng-hide-add, &.ng-hide-remove
+		transition: all linear 0.25s
+	&.ng-hide
+		opacity: 0
+		margin: 0
+		padding: 0
+		line-height: 0
+		height: 0
+		width: 100%

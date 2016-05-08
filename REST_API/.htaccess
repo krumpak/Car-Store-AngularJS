@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteBase /carshop
+RewriteRule ^carshop/([a-zA-Z0-9-/]+)/(\s*|[a-zA-Z0-9]+)$ index.php?slug=$1&id=$2 [L]
+RewriteRule ^carshop/([a-zA-Z0-9-/]+)$ index.php?slug=$1 [L]

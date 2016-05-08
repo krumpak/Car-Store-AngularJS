@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags always come first -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./css/bootstrap.4.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+		<script src="./js/angular.min.js"></script>
+		<script src="./js/angular-animate.js"></script>
+		<script src="./js/app.js"></script>
+		<title>Car Store</title>
+  </head>
+  <body ng-app="app">
+		<div class="container-fluid" ng-controller="storeController as store">
+			<div class="row">
+				<div class="col-md-12 col-lg-8 col-lg-offset-2 col-xl-6 col-xl-offset-3 mainContainer">
+					<a href="./"><h1 class="text-xs-center">Car Store</h1></a>
+					<div class="alert alert-danger animate-show" ng-show="store.error">
+						<strong ng-repeat="error in store.errorsCars"> {{ error.message }} </strong> <a href="#" class="alert-link" ng-click="store.getCars()">Tray&nbsp;again!</a>
+					</div>
+					<div class="animate-show">
+						<img ng-show="store.notify" src="./img/fading-lines.gif" alt="" class="center-block preloader">
+					</div>
+					<div class="animate-show" ng-show="store.showCars">
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="card-columns">
+								<div class="card" ng-repeat="car in store.cars | orderBy:['brand', 'name', 'type'] | limitTo: store.showLimit">
+									<div class="card-block">
+										<h4 class="card-title">{{ car.name }}</h4>
+										<h6 class="card-subtitle text-muted">{{ car.brand }}</h6>
+									</div>
+									<div class="card-bgimage" ng-style="{'background-image': 'url({{ car.image }})'}"></div>
+									<div class="card-block">
+										<p class="card-text">{{ car.description }}</p>
+										<dl class="dl-horizontal">
+											<dt class="col-sm-3">Type: </dt>
+											<dd class="col-sm-9">{{ car.type }}</dd>
+											<dt class="col-sm-3">Color: </dt>
+											<dd class="col-sm-9">{{ car.color }}</dd>
+										</dl>
+										<button class="btn btn-warning btn-block btn-md" ng-click="store.order(car.id)">Order Test Drive</button>
+									</div>
+								</div>
+							</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<span class="btn btn-secondary btn-sm btn-block" ng-click="store.showMore()" ng-if="store.showLimit < store.cars.length">Show more ...</span>
+							</div>
+						</div>
+					</div>
+					<div class="animate-show" ng-if="store.showOrder">
+						<div class="row">
+							<div class="col-sm-12 col-md-5">
+								<div class="card" id="selected-card">
+										<button id="changeCar" class="btn btn-secondary" tabindex="3" ng-click="store.changeCarTab()">Change Car</button>
+									<div class="card-block">
+										<h4 class="card-title">{{ store.selectedCar.name }}</h4>
+										<h6 class="card-subtitle text-muted">{{ store.selectedCar.brand }}</h6>
+									</div>
+									<div class="card-bgimage" ng-style="{'background-image': 'url({{ store.selectedCar.image }})'}"></div>
+									<div class="card-block">
+										<p class="card-text">{{ store.selectedCar.description }}</p>
+										<dl class="dl-horizontal">
+											<dt class="col-sm-3">Type: </dt>
+											<dd class="col-sm-9">{{ store.selectedCar.type }}</dd>
+											<dt class="col-sm-3">Color: </dt>
+											<dd class="col-sm-9">{{ store.selectedCar.color }}</dd>
+										</dl>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-12 col-md-7">
+								<div class="card card-block">
+									<h3 class="card-title">Order Test Drive</h3>
+									<div class="alert alert-danger animate-show" ng-show="store.errorTimeslot">
+										<strong ng-repeat="error in store.errorsTimeslots"> {{ error.message }} </strong> <a href="#" class="alert-link" ng-click="store.getTimeslots()">Tray&nbsp;again!</a>
+									</div>
+									<div class="animate-show">
+										<img ng-show="store.notifyTimeslot" src="./img/fading-lines.gif" alt="" class="center-block preloader">
+									</div>
+									<form name="orderForm"
+												ng-if="store.showOrder && !store.notifyTimeslot && !store.errorTimeslot" novalidate>
+										<label for="timeslot" ng-if="store.filtered.length>1">Change available Test Drive timeslot</label>
+										<label for="timeslot" ng-if="store.filtered.length==1">Only available Test Drive timeslot</label>
+										<br>
+										<select name="timeslot" id="timeslot" class="form-control" 
+														ng-class="{'btn-danger-outline': orderForm.selectedData.$invalid && orderForm.timeslot.$touched, 'btn-success-outline': orderForm.selectedData.$valid}"
+														ng-model="store.selectedTimeslot" 
+														ng-options="( timeslot.date + ', ' + timeslot.time + ' -- ' + ( timeslot.location | newLine ) ) for timeslot in store.filtered = ( store.timeslots  | filter: {carId: store.selectedCarId, reserved: false} | orderBy: ['location', 'date', 'time'] )"
+														ng-show="store.filtered.length>0"
+														ng-disabled="store.filtered.length==1">
+										</select>
+										<input name="selectedData" type="hidden" ng-model="store.selectedTimeslot" ng-required="true">
+										<div class="alert alert-danger animate-show" ng-show="store.filtered.length<=0">No available Test Drive timeslot</div>
+										<br>
+										<div class="alert alert-danger animate-show" ng-hide="store.selectedTimeslot || store.filtered.length<=0">No selected Test Drive timeslot</div>
+										<dl class="dl-horizontal" ng-show="store.selectedTimeslot">
+											<dt class="col-sm-3">Contact: </dt>
+											<dd class="col-sm-9">{{ store.selectedTimeslot.contactEmail }}</dd>
+											<dt class="col-sm-3">Date: </dt>
+											<dd class="col-sm-9">{{ store.selectedTimeslot.date + ', ' + store.selectedTimeslot.time }}</dd>
+											<dt class="col-sm-3">Location: </dt>
+											<dd class="col-sm-9">{{ store.selectedTimeslot.location | newLine }}</dd>
+										</dl>
+										<label for="email">Enter valid Email</label>
+										<br>
+										<div class="input-group" style="width:100% !important" ng-class="{'has-danger': orderForm.email.$invalid && orderForm.email.$touched, 'has-success': orderForm.email.$valid && orderForm.email.$touched }">
+											<span class="input-group-addon" style="width:30px !important" ng-class="{'alert-danger': orderForm.email.$invalid && orderForm.email.$touched, 'alert-success': orderForm.email.$valid && orderForm.email.$touched }">@</span>
+											<input name="email" type="text" class="form-control" style="width:100% !important" placeholder="Enter valid Email" tabindex="1" ng-required="true" ng-pattern="/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i" ng-model="store.email" ng-class="{'form-control-danger': orderForm.email.$invalid && orderForm.email.$touched, 'form-control-success': orderForm.email.$valid && orderForm.email.$touched }" autofocus>
+										</div>
+										<br>
+										<button class="btn btn-success" tabindex="2" ng-disabled="orderForm.$invalid" ng-click="store.sendOrder()">Order Test Drive</button>
+									</form>
+									<br>
+									<div class="alert alert-success animate-show" ng-show="store.sended.type=='stored'">
+										<strong> {{ store.sended.message }} </strong>
+									</div>
+									<div class="alert alert-danger animate-show" ng-show="store.errorOrder">
+										<strong ng-repeat="error in store.errorsSended"> {{ error.message }} </strong> <a href="#" class="alert-link" ng-click="store.sendOrder()">Tray&nbsp;again!</a>
+									</div>
+									<div class="animate-show">
+										<img ng-show="store.notifyOrder" src="./img/fading-lines.gif" alt="" class="center-block preloader">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+  </body>
+</html>
